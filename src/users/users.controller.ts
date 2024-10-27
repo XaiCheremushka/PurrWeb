@@ -8,7 +8,7 @@ export class UsersController {
     password: string
 
     constructor() {
-        this.email = "vania55ru@mail.ru"
+        this.email = "vania@armenia.ru"
         this.password = "asdasd55"
     }
 
