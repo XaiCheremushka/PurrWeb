@@ -1,52 +1,41 @@
-import { Controller, Get, Body, Post } from '@nestjs/common';
+import { Controller, Get, Body, Post, Delete, Param, Put } from '@nestjs/common';
 import { UsersDto } from './users.dto/users.dto';
+import { Users } from './users.entity';
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
-    id: number
-    email: string
-    password: string
 
-    constructor() {
-        this.email = "vania@armenia.ru"
-        this.password = "asdasd55"
-    }
+    constructor(private readonly usersService: UsersService) { }
 
     @Post()
     async create(@Body() dto: UsersDto) {
-        this.email = dto.email
-        this.password = dto.password
-
-        return {
-            "email": this.email,
-            "password": this.password
-        }
+        return await this.usersService.create(dto);
     }
 
     @Get(':id')
-    async read() {
-        return {
-            "email": this.email,
-            "password": this.password
-        }
+    async read(@Param('id') id: number): Promise<Users> {
+        return await this.usersService.getOne(id);
     }
 
     // Допилить 
-    @Post(":id")
-    async update(@Body() dto: UsersDto) {
-        this.email = dto.email
-        this.password = dto.password
-
-        return {
-            "email": this.email,
-            "password": this.password
-        }
+    @Put(":id")
+    async update(@Param('id') id: number, @Body() dto: UsersDto) {
+        return await this.usersService.update(id, dto)
     }
 
-    @Get(":id/delete")
-    async delete() {
-        return {
-            "message": "Success delete user"
+    @Delete(":id")
+    async delete(@Param('id') id: number) {
+        if (await this.usersService.remove(id)) {
+            return {
+                "message": "Success delete user"
+            }
+        } else {
+            return {
+                "message": "User no found"
+            }
         }
+
+
     }
 }
