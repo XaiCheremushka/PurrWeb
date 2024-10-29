@@ -20,30 +20,17 @@ export class ColumnsController {
 
     @UseGuards(AuthGuard('jwt'))
     @Put(":id")
-    async update(@Param("id") id_column: number, @Body() dto: ColumnsDto, @Req() req) {
-        const user = await this.columnsService.getUser(id_column);
-        if (req.user.id_user == user.id_user) {
-            return await this.columnsService.update(id_column, dto);
-        } else {
-            return { "Message": "Access is denied" }
-        }
-
+    async update(@Param("id") id_column: number, @Body() dto: ColumnsDto) {
+        return await this.columnsService.update(id_column, dto);
     }
 
     @UseGuards(AuthGuard('jwt'))
     @Delete(":id")
-    async delete(@Param("id") id_column: number, @Req() req) {
-        const user = await this.columnsService.getUser(id_column);
-        if (req.user.id_user == user.id_user) {
-            if (await this.columnsService.remove(id_column)) {
-                return { "message": "Success delete!" }
-            } else {
-                return { "message": "Column not found" }
-            }
+    async delete(@Param("id") id_column: number) {
+        if (await this.columnsService.remove(id_column)) {
+            return { "message": "Success delete!" }
         } else {
-            return { "Message": "Access is denied" }
+            return { "message": "Column not found" }
         }
-
-
     }
 }

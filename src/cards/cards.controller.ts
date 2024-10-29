@@ -20,27 +20,17 @@ export class CardsController {
 
     @UseGuards(AuthGuard('jwt'))
     @Put(":id")
-    async update(@Param("id") id_card: number, @Body() dto: CardsDto, @Req() req) {
-        const user = await this.cardsService.getUser(id_card);
-        if (req.user.id_user == user.id_user) {
-            return await this.cardsService.update(id_card, dto);
-        } else {
-            return { "Message": "Access is denied" }
-        }
+    async update(@Param("id") id_card: number, @Body() dto: CardsDto) {
+        return await this.cardsService.update(id_card, dto);
     }
 
     @UseGuards(AuthGuard('jwt'))
     @Delete(":id")
-    async delete(@Param("id") id_card: number, @Req() req) {
-        const user = await this.cardsService.getUser(id_card);
-        if (req.user.id_user == user.id_user) {
-            if (await this.cardsService.remove(id_card)) {
-                return { "message": "Success delete!" }
-            } else {
-                return { "message": "Card not found" }
-            }
+    async delete(@Param("id") id_card: number) {
+        if (await this.cardsService.remove(id_card)) {
+            return { "message": "Success delete!" }
         } else {
-            return { "Message": "Access is denied" }
+            return { "message": "Card not found" }
         }
     }
 }

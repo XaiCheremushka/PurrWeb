@@ -20,27 +20,17 @@ export class CommentsController {
 
     @UseGuards(AuthGuard('jwt'))
     @Put(":id")
-    async update(@Param("id") id_comment: number, @Body() dto: CommentsDto, @Req() req) {
-        const user = await this.commentsService.getUser(id_comment);
-        if (req.user.id_user == user.id_user) {
-            await this.commentsService.update(id_comment, dto)
-        } else {
-            return { "Message": "Access is denied" }
-        }
+    async update(@Param("id") id_comment: number, @Body() dto: CommentsDto) {
+        await this.commentsService.update(id_comment, dto)
     }
 
     @UseGuards(AuthGuard('jwt'))
     @Delete(":id")
-    async delete(@Param("id") id_comment: number, @Req() req) {
-        const user = await this.commentsService.getUser(id_comment);
-        if (req.user.id_user == user.id_user) {
-            if (await this.commentsService.remove(id_comment)) {
-                return { "message": "Success delete!" }
-            } else {
-                return { "message": "Comment not found" }
-            }
+    async delete(@Param("id") id_comment: number) {
+        if (await this.commentsService.remove(id_comment)) {
+            return { "message": "Success delete!" }
         } else {
-            return { "Message": "Access is denied" }
+            return { "message": "Comment not found" }
         }
     }
 }

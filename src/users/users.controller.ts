@@ -35,7 +35,5 @@ export class UsersController {
                 "message": "User no found"
             }
         }
-
-
     }
 }
