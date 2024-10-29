@@ -4,6 +4,7 @@ import { Cards } from './cards.entity';
 import { Repository } from 'typeorm';
 import { ColumnsService } from 'src/columns/columns.service';
 import { Users } from 'src/users/users.entity';
+import { NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class CardsService {
@@ -21,14 +22,19 @@ export class CardsService {
 
     // Метод для поиска карточки по ID
     async getOne(id_card: number): Promise<Cards | undefined> {
-        return await this.cardRepository.findOne({ where: { id_card } });
+        const card = await this.cardRepository.findOne({ where: { id_card } });
+        if (card) {
+            return card
+        } else {
+            throw new NotFoundException('Карточка не найдена');
+        }
     }
 
     // Метод для создания новой карточки
     async create(id_column: number, cardData: Partial<Cards>): Promise<Cards> {
         const column = await this.columnService.getOne(id_column);
         if (!column) {
-            throw new Error('Колонка не найдена');
+            throw new NotFoundException('Колонка не найдена');
         }
 
         cardData.fk_column = column;

@@ -18,7 +18,12 @@ export class UsersService {
 
     // Метод для поиска пользователя по ID
     async getOne(id_user: number): Promise<Users | undefined> {
-        return await this.userRepository.findOne({ where: { id_user } });
+        const user = await this.userRepository.findOne({ where: { id_user } });
+        if (user) {
+            return user
+        } else {
+            throw new NotFoundException('Пользователь не найден');
+        }
     }
 
     // Метод для создания нового пользователя

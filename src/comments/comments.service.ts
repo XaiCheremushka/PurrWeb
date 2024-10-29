@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comments } from './comments.entity';
 import { Repository } from 'typeorm';
@@ -21,14 +21,19 @@ export class CommentsService {
 
     // Метод для поиска комментария по ID
     async getOne(id_comment: number): Promise<Comments | undefined> {
-        return await this.commentRepository.findOne({ where: { id_comment } });
+        const comment = await this.commentRepository.findOne({ where: { id_comment } });
+        if (comment) {
+            return comment
+        } else {
+            throw new NotFoundException('Комментарий не найден');
+        }
     }
 
     // Метод для создания нового комментария
     async create(id_card: number, cardData: Partial<Comments>): Promise<Comments> {
         const card = await this.cardService.getOne(id_card);
         if (!card) {
-            throw new Error('Колонка не найдена');
+            throw new NotFoundException('Карточка не найдена');
         }
 
         cardData.fk_card = card;

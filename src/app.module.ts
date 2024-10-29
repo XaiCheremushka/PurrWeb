@@ -9,11 +9,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 
-// import * as dotenv from 'dotenv';
-
-// dotenv.config();
-
-
 
 @Module({
   imports: [UsersModule, CardsModule, CommentsModule, ColumnsModule, AuthModule,

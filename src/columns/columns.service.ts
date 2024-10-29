@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Columns } from './columns.entity';
 import { Repository } from 'typeorm';
@@ -21,7 +21,12 @@ export class ColumnsService {
 
     // Метод для поиска колонки по ID
     async getOne(id_column: number): Promise<Columns | undefined> {
-        return await this.columnRepository.findOne({ where: { id_column } });
+        const column = await this.columnRepository.findOne({ where: { id_column } });
+        if (column) {
+            return column
+        } else {
+            throw new NotFoundException('Колонка не найдена');
+        }
     }
 
     // Метод для создания новой колонки
@@ -29,7 +34,7 @@ export class ColumnsService {
 
         const user = await this.usersService.getOne(id_user);
         if (!user) {
-            throw new Error('Пользователь не найден');
+            throw new NotFoundException('Пользователь не найден');
         }
 
         columnData.fk_user = user;
