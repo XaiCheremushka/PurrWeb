@@ -10,6 +10,11 @@ export class UsersService {
         private readonly userRepository: Repository<Users>,
     ) { }
 
+    // Метод для поиска пользователя по Email
+    async getUserByEmail(email: string): Promise<Users | undefined> {
+        return await this.userRepository.findOne({ where: { email: email } })
+    }
+
     // Метод для поиска пользователя по ID
     async getOne(id_user: number): Promise<Users | undefined> {
         return await this.userRepository.findOne({ where: { id_user } });
