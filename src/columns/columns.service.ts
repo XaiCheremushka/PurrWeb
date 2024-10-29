@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Columns } from './columns.entity';
 import { Repository } from 'typeorm';
 import { UsersService } from 'src/users/users.service';
+import { Users } from 'src/users/users.entity';
 
 @Injectable()
 export class ColumnsService {
@@ -11,6 +12,12 @@ export class ColumnsService {
         private readonly columnRepository: Repository<Columns>,
         private readonly usersService: UsersService,
     ) { }
+
+    // Метод для получения пользователя
+    async getUser(id_column: number): Promise<Users> {
+        const column = await this.getOne(id_column)
+        return column.fk_user
+    }
 
     // Метод для поиска колонки по ID
     async getOne(id_column: number): Promise<Columns | undefined> {

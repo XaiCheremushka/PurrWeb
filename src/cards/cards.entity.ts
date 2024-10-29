@@ -5,7 +5,7 @@ import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "ty
 @Entity()
 export class Cards {
     @PrimaryGeneratedColumn()
-    id_cards: number;
+    id_card: number;
 
     @ManyToOne(() => Columns, (column) => column.cards, { onDelete: 'CASCADE' })
     fk_column: Columns;

@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { CommentsDto } from './comments.dto/comments.dto';
 import { CommentsService } from './comments.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users/:userId/columns/:columnId/cards/:cardId/comments')
 export class CommentsController {
@@ -17,22 +18,29 @@ export class CommentsController {
         return await this.commentsService.getOne(id_comment)
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Put(":id")
-    async update(@Param("id") id_comment: number, @Body() dto: CommentsDto) {
-        return await this.commentsService.update(id_comment, dto)
+    async update(@Param("id") id_comment: number, @Body() dto: CommentsDto, @Req() req) {
+        const user = await this.commentsService.getUser(id_comment);
+        if (req.user.id_user == user.id_user) {
+            await this.commentsService.update(id_comment, dto)
+        } else {
+            return { "Message": "Access is denied" }
+        }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Delete(":id")
-    async delete(@Param("id") id_comment: number) {
-        if (await this.commentsService.remove(id_comment)) {
-            return {
-                "message": "Success delete!"
+    async delete(@Param("id") id_comment: number, @Req() req) {
+        const user = await this.commentsService.getUser(id_comment);
+        if (req.user.id_user == user.id_user) {
+            if (await this.commentsService.remove(id_comment)) {
+                return { "message": "Success delete!" }
+            } else {
+                return { "message": "Comment not found" }
             }
         } else {
-            return {
-                "message": "Comment not found"
-            }
+            return { "Message": "Access is denied" }
         }
-
     }
 }

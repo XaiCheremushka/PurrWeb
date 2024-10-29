@@ -7,9 +7,17 @@ import { CommentsModule } from './comments/comments.module';
 import { ColumnsModule } from './columns/columns.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
+
+// import * as dotenv from 'dotenv';
+
+// dotenv.config();
+
+
 
 @Module({
-  imports: [UsersModule, CardsModule, CommentsModule, ColumnsModule,
+  imports: [UsersModule, CardsModule, CommentsModule, ColumnsModule, AuthModule,
+    ConfigModule.forRoot({ envFilePath: '.env' }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DATABASE_HOST,
@@ -20,10 +28,9 @@ import { AuthModule } from './auth/auth.module';
       autoLoadEntities: true, // Автоматически загружает все сущности
       synchronize: true, // Включает автоматическую синхронизацию моделей с таблицами
     }),
-    UsersModule,
-    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }  
+export class AppModule { }
+

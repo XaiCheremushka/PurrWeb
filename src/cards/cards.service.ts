@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Cards } from './cards.entity';
 import { Repository } from 'typeorm';
 import { ColumnsService } from 'src/columns/columns.service';
+import { Users } from 'src/users/users.entity';
 
 @Injectable()
 export class CardsService {
@@ -12,9 +13,15 @@ export class CardsService {
         private readonly columnService: ColumnsService,
     ) { }
 
+    // Метод для получения пользователя
+    async getUser(id_card: number): Promise<Users> {
+        const card = await this.getOne(id_card);
+        return card.fk_column.fk_user
+    }
+
     // Метод для поиска карточки по ID
-    async getOne(id_cards: number): Promise<Cards | undefined> {
-        return await this.cardRepository.findOne({ where: { id_cards } });
+    async getOne(id_card: number): Promise<Cards | undefined> {
+        return await this.cardRepository.findOne({ where: { id_card } });
     }
 
     // Метод для создания новой карточки

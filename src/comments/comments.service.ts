@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Comments } from './comments.entity';
 import { Repository } from 'typeorm';
 import { CardsService } from 'src/cards/cards.service';
+import { Users } from 'src/users/users.entity';
 
 @Injectable()
 export class CommentsService {
@@ -11,6 +12,12 @@ export class CommentsService {
         private readonly commentRepository: Repository<Comments>,
         private readonly cardService: CardsService,
     ) { }
+
+    // Метод для получения пользователя
+    async getUser(id_comment: number): Promise<Users> {
+        const comment = await this.getOne(id_comment);
+        return comment.fk_card.fk_column.fk_user
+    }
 
     // Метод для поиска комментария по ID
     async getOne(id_comment: number): Promise<Comments | undefined> {
